@@ -1,0 +1,242 @@
+﻿@using ShowMeGraph.Blazor.Events;
+@using ShowMeGraph.Contracts;
+@using ShowMeGraph.Data;
+@using ShowMeGraph.Rendering.SkiaSharp;
+
+<SKCanvasView EnableRenderLoop="true"
+              OnPaintSurface="Canvas_Paint"
+              style="width: 100%; height: 100%"
+              oncontextmenu="return false;"
+              @onmousedown="Canvas_MouseDown"
+              @onmouseup="Canvas_MouseUp"
+              @onmouseout="Canvas_MouseUp"
+              @onmousemove="Canvas_MouseMove" />
+
+@code {
+    private SKRenderTarget? _target;
+    private float _scale = 1;
+    private Vector2F _offset;
+
+    private bool _mousePressed;
+    private Vector2F _lastMousePosition;
+
+    private IRenderNode? _pressedNode;
+    private IRenderNode? _hoveredNode;
+    private IRenderEdge<IRenderNode>? _hoveredEdge;
+
+    [Parameter, EditorRequired] public IGraphLayoutInfo LayoutInfo { get; set; } = default!;
+    [Parameter, EditorRequired] public IGraphRenderInfo RenderInfo { get; set; } = default!;
+    [Parameter, EditorRequired] public ILayout Layout { get; set; } = default!;
+    [Parameter] public IRender<SKRenderTarget, IGraphRenderInfo>? Renderer { get; set; }
+
+    [Parameter] public bool AllowPanning { get; set; } = false;
+    [Parameter] public bool AllowNodeDragging { get; set; } = false;
+
+    [Parameter] public EventCallback<NodeEventArgs> OnNodeHoverEnter { get; set; }
+    [Parameter] public EventCallback<NodeEventArgs> OnNodeHoverLeave { get; set; }
+    [Parameter] public EventCallback<NodeEventArgs> OnNodeClicked { get; set; }
+    [Parameter] public EventCallback<EdgeEventArgs> OnEdgeHoverEnter { get; set; }
+    [Parameter] public EventCallback<EdgeEventArgs> OnEdgeHoverLeave { get; set; }
+    [Parameter] public EventCallback<EdgeEventArgs> OnEdgeClicked { get; set; }
+    [Parameter] public EventCallback OnWhitespaceClicked { get; set; }
+
+    public Vector2F ClientToLocal(Vector2F position) =>
+        (position - new Vector2F(_target!.Width, _target!.Height) / 2 - _target!.Offset) / (_target!.PixelsPerUnit * _target!.Scale);
+
+    private IRenderNode? OverNode(Vector2F point)
+    {
+        if (Layout is null)
+        {
+            return null;
+        }
+
+        foreach (var node in RenderInfo.Nodes)
+        {
+            if ((node.Position - point).SqrMagnitude <= SKRenderingConstans.NodeRadius * SKRenderingConstans.NodeRadius)
+            {
+                return node;
+            }
+        }
+
+        return null;
+    }
+
+    private IRenderEdge<IRenderNode>? OverEdge(Vector2F point)
+    {
+        if (Layout is null)
+        {
+            return null;
+        }
+
+        foreach (var edge in RenderInfo.Edges)
+        {
+            var srcPosition = edge.Source.Position;
+            var destPosition = edge.Target.Position;
+            var srcDest = destPosition - srcPosition;
+
+            var hasReturnEdge = RenderInfo.Edge(edge.Target, edge.Source) is not null;
+
+            if (hasReturnEdge)
+            {
+                var normalized = srcDest.Normalized();
+                var normal = new Vector2F(-normalized.Y, normalized.X);
+                var offset = -SKRenderingConstans.ParallelEdgeOffset * normal;
+
+                srcPosition += offset;
+                destPosition += offset;
+            }
+
+            var sqrMagnitude = srcDest.SqrMagnitude;
+
+            var srcPoint = point - srcPosition;
+            var dot = srcPoint.Dot(srcDest);
+            var t = dot / sqrMagnitude;
+
+            var distance = 0f;
+
+            if (t < 0 || t > 1)
+            {
+                continue;
+            }
+
+            var closest = srcPosition + t * (srcDest);
+            distance = (point - closest).Magnitude;
+
+            if (distance < 0.1f)
+            {
+                return edge;
+            }
+        }
+
+        return null;
+    }
+
+    private void Canvas_Paint(SKPaintSurfaceEventArgs e)
+    {
+        Renderer ??= SKRenderPipeline.CreateDefaultBuilder().Build();
+
+        _target = new SKRenderTarget(new(e.Surface, e.Info), 16);
+        _target.Scale = _scale;
+        _target.Offset = _offset;
+
+        Layout.Arrange(LayoutInfo);
+        Renderer.Render(_target, RenderInfo);
+    }
+
+    private async void Canvas_MouseDown(MouseEventArgs e)
+    {
+        _mousePressed = e.Button == 0;
+        _lastMousePosition = new Vector2F((float)e.OffsetX, (float)e.OffsetY);
+
+        var localMousePosition = ClientToLocal(_lastMousePosition);
+
+        if (Layout is null)
+        {
+            if (_mousePressed)
+            {
+                await OnWhitespaceClicked.InvokeAsync();
+            }
+            return;
+        }
+
+        var node = OverNode(localMousePosition);
+        var edge = OverEdge(localMousePosition);
+
+        if (node is not null)
+        {
+            if (e.Button == 0)
+            {
+                await OnNodeClicked.InvokeAsync(new(node));
+                _pressedNode = node;
+            }
+            else if (e.Button == 2)
+            {
+                node.Fixed = false;
+            }
+
+            return;
+        }
+
+        if (edge is not null)
+        {
+            await OnEdgeClicked.InvokeAsync(new(edge));
+            return;
+        }
+
+        if (_mousePressed)
+        {
+            await OnWhitespaceClicked.InvokeAsync();
+        }
+    }
+
+    private void Canvas_MouseUp(MouseEventArgs e)
+    {
+        _mousePressed = false;
+        _pressedNode = null;
+    }
+
+    private async void Canvas_MouseMove(MouseEventArgs e)
+    {
+        var oldMousePosition = _lastMousePosition;
+        _lastMousePosition = new((float)e.OffsetX, (float)e.OffsetY);
+
+        var localMousePosition = ClientToLocal(_lastMousePosition);
+
+        var node = OverNode(localMousePosition);
+        var edge = OverEdge(localMousePosition);
+
+        if (node != _hoveredNode)
+        {
+            if (node is not null)
+            {
+                await OnNodeHoverEnter.InvokeAsync(new(node));
+            }
+
+            if (_hoveredNode is not null)
+            {
+                await OnNodeHoverLeave.InvokeAsync(new(_hoveredNode));
+            }
+
+            _hoveredNode = node;
+        }
+
+        if (edge != _hoveredEdge)
+        {
+            if (edge is not null)
+            {
+                await OnEdgeHoverEnter.InvokeAsync(new(edge));
+            }
+
+            if (_hoveredEdge is not null)
+            {
+                await OnEdgeHoverLeave.InvokeAsync(new(_hoveredEdge));
+            }
+
+            _hoveredEdge = edge;
+        }
+
+        if (!_mousePressed)
+        {
+            return;
+        }
+
+        if (Layout is null)
+        {
+            return;
+        }
+
+        var delta = (_lastMousePosition - oldMousePosition);
+
+        if (AllowNodeDragging && _pressedNode is not null)
+        {
+            _pressedNode.Position += delta / (_target!.PixelsPerUnit * _target!.Scale);
+            _pressedNode.Fixed = _pressedNode.Fixed || delta.SqrMagnitude > 4;
+            return;
+        }
+
+        if (AllowPanning)
+        {
+            _target!.Offset += delta;
+        }
+    }
+}

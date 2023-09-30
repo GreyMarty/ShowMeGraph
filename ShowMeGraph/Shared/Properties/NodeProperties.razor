@@ -1,0 +1,25 @@
+﻿@using ShowMeGraph.Data;
+
+@attribute [InspectorProperties(typeof(Node))]
+
+<EditForm Model="Model"
+          class="d-flex flex-column gap-2">
+    <MudText Typo="Typo.subtitle1">Position</MudText>
+    <div class="d-flex gap-2">
+        <MudTextField T="float"
+                      Value="Model.Position.X"
+                      ValueChanged="async v => Model.Position = Model.Position with { X = v }"
+                      Label="X" />
+        <MudTextField T="float"
+                      Value="Model.Position.Y"
+                      ValueChanged="async v => Model.Position = Model.Position with { Y = v }"
+                      Label="Y" />
+    </div>
+    <MudCheckBox @bind-Checked="Model.Fixed"
+                 Label="Fixed"
+                 LabelPosition="LabelPosition.Start" />
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired] public Node Model { get; set; }
+}

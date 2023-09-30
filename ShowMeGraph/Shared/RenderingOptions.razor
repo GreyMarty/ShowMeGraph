@@ -1,0 +1,53 @@
+﻿@using ShowMeGraph.Layout.ForceBased;
+@using ShowMeGraph.Rendering.SkiaSharp;
+
+<MudPaper Class="d-flex flex-column gap-4 px-4 py-2 rounded-0"
+          Style="overflow-y: scroll"
+          MinWidth="300px"
+          Width="20%"
+          Elevation="0">
+    <MudText Typo="Typo.h6">
+        Visualization Options
+    </MudText>
+    <MudSlider @bind-Value="Options.Stiffness"
+               Min="0.1f" Max="5"
+               Step="0.1f"
+               Color="Color.Info">
+        <b>Stiffness:</b> @Options.Stiffness
+    </MudSlider>
+    <MudSlider @bind-Value="Options.EdgeLength"
+               Min="1" Max="10"
+               Step="0.5f"
+               Color="Color.Info">
+        <b>Edge Length:</b> @Options.EdgeLength
+    </MudSlider>
+    <MudSlider @bind-Value="Options.Repulsion"
+               Min="0.1f" Max="5"
+               Step="0.1f"
+               Color="Color.Info">
+        <b>Repulsion:</b> @Options.Repulsion
+    </MudSlider>
+    <MudSlider @bind-Value="Options.PassiveStiffness"
+               Min="0.01f" Max="1"
+               Step="0.01f"
+               Color="Color.Info">
+        <b>Passive Stiffness:</b> @Options.PassiveStiffness
+    </MudSlider>
+    <MudSlider @bind-Value="Options.PassiveDistance"
+               Min="1" Max="50"
+               Step="1"
+               Color="Color.Info">
+        <b>Passive Distance:</b> @Options.PassiveDistance
+    </MudSlider>
+    <MudSlider @bind-Value="RenderTarget.Scale"
+               Min="0.5f" Max="2"
+               Step="0.1f"
+               Color="Color.Info">
+        <b>Scale:</b> @RenderTarget.Scale
+    </MudSlider>
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired] public ForceBasedLayoutOptions Options { get; set; }
+    [Parameter, EditorRequired] public SKRenderTarget RenderTarget { get; set; }
+}

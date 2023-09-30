@@ -1,0 +1,83 @@
+﻿@using ShowMeGraph.Animation;
+
+<div class="d-flex flex-column">
+    <MudSlider @bind-Value="Value"
+               Color="Color.Info"
+               Size="Size.Medium"
+               Variant="Variant.Filled"
+               Min="0f" Max="100f" />
+    <div class="d-flex p-2">
+        <MudText Typo="Typo.caption">@ElapsedTime.ToString("mm':'ss':'fff")</MudText>
+        <div class="d-flex flex-grow-1 justify-content-center gap-4 p-1">
+            <MudIconButton Icon="@Icons.Material.Filled.SkipPrevious"
+                           OnClick="() => Animation?.Previous()" />
+            <MudToggleIconButton @bind-Toggled="Playing"
+                                 Icon="@Icons.Material.Filled.PlayArrow"
+                                 ToggledIcon="@Icons.Material.Filled.Pause"
+                                 Size="Size.Large"
+                                 ToggledSize="Size.Large" />
+            <MudIconButton Icon="@Icons.Material.Filled.SkipNext"
+                           OnClick="() => Animation?.Next()" />
+        </div>
+        <MudText Typo="Typo.caption">@TotalTime.ToString("mm':'ss':'fff")</MudText>
+    </div>
+</div>
+
+@code {
+    private Timer? _timer;
+
+    [Parameter]
+    public IAnimation Animation { get; set; }
+
+    protected TimeSpan ElapsedTime => Animation?.ElapsedTime ?? TimeSpan.Zero;
+    protected TimeSpan TotalTime => Animation?.TotalTime ?? TimeSpan.Zero;
+
+    public bool Playing
+    {
+        get => _timer is not null;
+        set
+        {
+            if (value && Animation is not null)
+            {
+                if (Animation?.Finished == true)
+                {
+                    Animation?.Reset();
+                }
+
+                _timer ??= new Timer(Timer_Tick, TimeSpan.FromMilliseconds(100), 0, 100);
+            }
+            else
+            {
+                _timer?.Dispose();
+                _timer = null;
+            }
+        }
+    }
+
+    protected float Value
+    {
+        get => (float)(ElapsedTime / TotalTime * 100);
+        set
+        {
+            Animation?.MoveTo(TotalTime * (value / 100));
+        }
+    }
+
+    private async void Timer_Tick(object? state)
+    {
+        var dt = (TimeSpan)state!;
+
+        Animation?.Proceed(dt);
+
+        await InvokeAsync(StateHasChanged);
+
+        if (Animation?.Finished == true)
+        {
+            await _timer!.DisposeAsync();
+            _timer = null;
+
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+    }
+}

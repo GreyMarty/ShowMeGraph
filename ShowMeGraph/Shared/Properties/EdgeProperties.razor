@@ -1,0 +1,13 @@
+﻿@using Edge = Data.Edge;
+
+@attribute [InspectorProperties(typeof(Edge))]
+
+<EditForm Model="Model"
+          class="d-flex flex-column gap-2">
+    <MudTextField @bind-Value="Model.Weight"
+                  Label="Weight" />
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired] public Edge Model { get; set; }
+}

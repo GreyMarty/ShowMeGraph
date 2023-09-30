@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout Class="h-100">
+    @Body
+</MudLayout>
+
+@code {
+    private MudTheme _theme = new()
+        {
+            Palette = new()
+            {
+                AppbarBackground = Colors.BlueGrey.Default,
+                Info = Colors.BlueGrey.Lighten1
+            }
+        };
+}
