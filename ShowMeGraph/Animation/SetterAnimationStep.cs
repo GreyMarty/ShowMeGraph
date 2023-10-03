@@ -2,7 +2,7 @@
 
 public class SetterAnimationStep<T> : AnimationStep
 {
-    public SetterAnimationStep(Func<T> getter, Action<T> setter, T value, TimeSpan duration = default) : base(
+    public SetterAnimationStep(Func<T?> getter, Action<T?> setter, T? value, TimeSpan duration = default) : base(
         () => 
         {
             var state = getter();

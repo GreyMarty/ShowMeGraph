@@ -1,10 +1,8 @@
-﻿using ShowMeGraph.Animation;
-
-namespace ShowMeGraph.Contracts;
+﻿namespace ShowMeGraph.Contracts;
 
 public interface IAnimatedAlgorithm
 {
     public string Name { get; }
 
-    public IAnimation Animate(); 
+    public void Animate(); 
 }

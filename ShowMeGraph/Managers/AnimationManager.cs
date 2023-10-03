@@ -7,6 +7,8 @@ public class AnimationManager
 {
     private readonly IndexViewModel _index;
 
+    public IAnimation? Animation { get; private set; }
+
     public AnimationManager(IndexViewModel index)
     {
         _index = index;
@@ -14,13 +16,15 @@ public class AnimationManager
 
     public void Play(IAnimation animation)
     {
-        _index.Animation?.Reset();
-        _index.Animation = animation;
+        Animation?.Reset();
+        Animation = animation;
+        _index.OnStateHasChanged();
     }
 
     public void Stop()
     {
-        _index.Animation?.Reset();
-        _index.Animation = null;
+        Animation?.Reset();
+        Animation = null;
+        _index?.OnStateHasChanged();
     }
 }

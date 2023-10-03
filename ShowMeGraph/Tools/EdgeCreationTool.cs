@@ -23,6 +23,8 @@ public class EdgeCreationTool : ITool
         _index.AllowPanning = true;
         _index.SelectionManager.Enabled = true;
         _index.HoverManager.Enabled = true;
+        
+        _index.AnimationManager.Stop();
 
         _index.SelectionManager.SelectionChanged += SelectionManager_SelectionChanged;
     }

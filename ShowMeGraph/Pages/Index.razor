@@ -10,7 +10,8 @@
     <MudPaper Class="d-flex rounded-0"
               Outlined="true"
               Elevation="8">
-        <Toolbar Tools="_viewModel.Tools" />
+        <Toolbar Tools="_viewModel.Tools"
+                 Algorithms="_viewModel.Algorithms" />
     </MudPaper>
     <MudPaper Class="d-flex flex-1 flex-grow-1 gap-2 rounded-0"
               Style="overflow-y: hidden"
@@ -21,7 +22,7 @@
                   Width="20%"
                   Elevation="0">
             <LayoutOptions Options="_viewModel.GraphLayout.Options"
-                              RenderTarget="_graphView.RenderTarget" />
+                           RenderTarget="_graphView.RenderTarget" />
         </MudPaper>
         <div class="d-flex flex-1">
             <GraphView @ref="_graphView"
@@ -47,7 +48,7 @@
         </MudPaper>
     </MudPaper>
 
-    <AnimationPlayer />
+    <AnimationPlayer Animation="_viewModel.AnimationManager.Animation"/>
 </div>
 
 @code
@@ -61,6 +62,7 @@
     protected override void OnInitialized()
     {
         _viewModel = new();
+        _viewModel.StateHasChanged += (_, _) => StateHasChanged();
 
         var nodes = new VisNode[] { new(), new(), new(), new(), };
 

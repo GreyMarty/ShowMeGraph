@@ -20,6 +20,8 @@ public class RandomizeTool : ITool
 
     public void Activate()
     {
+        _index.AnimationManager.Stop();
+
         var random = new Random();
 
         _index.Graph.Value.RemoveEdgeIf(_ => true);

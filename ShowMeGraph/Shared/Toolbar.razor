@@ -1,4 +1,5 @@
-﻿@using ShowMeGraph.Tools;
+﻿@using ShowMeGraph.Contracts;
+@using ShowMeGraph.Tools;
 
 <div class=@("d-flex gap-1" + (!Horizontal ? " flex-column" : ""))>
     @foreach (var tool in Tools)
@@ -19,12 +20,22 @@
                            OnClick="() => Tool_Clicked(tool)" />
         }
     }
+    @if (Algorithms.Length > 0)
+    {
+        <MudMenu Icon="@CustomIcons.Outlined.Graph">
+            @foreach (var algorithm in Algorithms)
+            {
+                <MudMenuItem OnClick="() => MenuItem_Click(algorithm)">@algorithm.Name</MudMenuItem>
+            }
+        </MudMenu>
+    }
 </div>
 
 @code {
     private Dictionary<ITool, bool> _selectedTools = default!;
 
     [Parameter, EditorRequired] public ITool[] Tools { get; set; } = default!;
+    [Parameter] public IAnimatedAlgorithm[] Algorithms { get; set; } = Array.Empty<IAnimatedAlgorithm>();
     [Parameter] public bool Horizontal { get; set; } = true;
 
     protected override void OnInitialized()
@@ -36,6 +47,20 @@
         if (_selectedTools.Any())
         {
             _selectedTools[Array.Find(Tools, x => x.Selectable)!] = true;
+        }
+    }
+
+    private void ResetSelectedTools()
+    {
+        foreach (var selectedTool in _selectedTools.Keys)
+        {
+            if (!_selectedTools[selectedTool])
+            {
+                continue;
+            }
+
+            selectedTool.Deactivate();
+            _selectedTools[selectedTool] = false;
         }
     }
 
@@ -52,18 +77,16 @@
             return;
         }
 
-        foreach (var selectedTool in _selectedTools.Keys)
-        {
-            if (!_selectedTools[selectedTool])
-            {
-                continue;
-            }
-
-            selectedTool.Deactivate();
-            _selectedTools[selectedTool] = false;
-        }
+        ResetSelectedTools();
 
         _selectedTools[tool] = true;
         tool.Activate();
+    }
+
+    private void MenuItem_Click(IAnimatedAlgorithm x)
+    {
+        x.Animate();
+        ResetSelectedTools();
+        StateHasChanged();
     }
 }

@@ -24,6 +24,8 @@ public class EraseTool : ITool
         _index.SelectionManager.Enabled = true;
         _index.HoverManager.Enabled = true;
 
+        _index.AnimationManager.Stop();
+
         _index.SelectionManager.SelectionChanged += SelectionManager_SelectionChanged;
     }
 

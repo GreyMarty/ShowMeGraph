@@ -37,6 +37,11 @@
         get => _timer is not null;
         set
         {
+            if (value == Playing)
+            {
+                return;
+            }
+
             if (value && Animation is not null)
             {
                 if (Animation?.Finished == true)
@@ -60,6 +65,14 @@
         set
         {
             Animation?.MoveTo(TotalTime * (value / 100));
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Animation is null)
+        {
+            Playing = false;
         }
     }
 

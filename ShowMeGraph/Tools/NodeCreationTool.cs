@@ -24,6 +24,8 @@ public class NodeCreationTool : ITool
         _index.SelectionManager.Enabled = false;
         _index.HoverManager.Enabled = false;
 
+        _index.AnimationManager.Stop();
+
         _index.WhitespaceClicked += Index_WhitespaceClicked;
     }
 

@@ -1,4 +1,5 @@
-﻿using ShowMeGraph.Animation;
+﻿using ShowMeGraph.Algorithms;
+using ShowMeGraph.Animation;
 using ShowMeGraph.Blazor.Events;
 using ShowMeGraph.Contracts;
 using ShowMeGraph.Data;
@@ -17,8 +18,6 @@ public class IndexViewModel : ViewModelBase
     
     private bool _allowPanning = true;
     private bool _allowDragging = true;
-
-    public IAnimation? Animation { get; set; }
 
     public VisGraph Graph
     {
@@ -57,7 +56,9 @@ public class IndexViewModel : ViewModelBase
     }
 
     public ITool[] Tools { get; }
+    public IAnimatedAlgorithm[] Algorithms { get; }
 
+    public event EventHandler? StateHasChanged;
     public event EventHandler<NodeEventArgs>? NodeHoverEnter;
     public event EventHandler<NodeEventArgs>? NodeHoverLeave;
     public event EventHandler<NodeEventArgs>? NodeClicked;
@@ -82,6 +83,11 @@ public class IndexViewModel : ViewModelBase
             new RandomizeTool(this)
         };
 
+        Algorithms = new IAnimatedAlgorithm[]
+        {
+            new DijkstraAnimatedAlgorithm(this)
+        };
+
         SelectionManager = new(this);
         HoverManager = new(this);
         AnimationManager = new(this);
@@ -100,4 +106,6 @@ public class IndexViewModel : ViewModelBase
     public void OnEdgeClicked(EdgeEventArgs e) => EdgeClicked?.Invoke(this, e);
 
     public void OnWhitespaceClicked(LocalMouseEventArgs e) => WhitespaceClicked?.Invoke(this, e);
+
+    public void OnStateHasChanged() => StateHasChanged?.Invoke(this, EventArgs.Empty);
 }
