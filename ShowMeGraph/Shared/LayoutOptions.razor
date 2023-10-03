@@ -1,13 +1,9 @@
 ﻿@using ShowMeGraph.Layout.ForceBased;
 @using ShowMeGraph.Rendering.SkiaSharp;
 
-<MudPaper Class="d-flex flex-column gap-4 px-4 py-2 rounded-0"
-          Style="overflow-y: scroll"
-          MinWidth="300px"
-          Width="20%"
-          Elevation="0">
+<div class="d-flex flex-column gap-4 w-100 h-100">
     <MudText Typo="Typo.h6">
-        Visualization Options
+        Layout Options
     </MudText>
     <MudSlider @bind-Value="Options.Stiffness"
                Min="0.1f" Max="5"
@@ -39,13 +35,13 @@
                Color="Color.Info">
         <b>Passive Distance:</b> @Options.PassiveDistance
     </MudSlider>
-    <MudSlider @bind-Value="RenderTarget.Scale"
-               Min="0.5f" Max="2"
-               Step="0.1f"
+    <MudSlider @bind-Value="Options.MaxOffset"
+               Min="5" Max="50"
+               Step="1"
                Color="Color.Info">
-        <b>Scale:</b> @RenderTarget.Scale
+        <b>Max Radius:</b> @Options.MaxOffset
     </MudSlider>
-</MudPaper>
+</div>
 
 @code {
     [Parameter, EditorRequired] public ForceBasedLayoutOptions Options { get; set; }

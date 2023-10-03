@@ -1,0 +1,69 @@
+﻿@using ShowMeGraph.Tools;
+
+<div class=@("d-flex gap-1" + (!Horizontal ? " flex-column" : ""))>
+    @foreach (var tool in Tools)
+    {
+        if (tool.Selectable)
+        {
+            <MudToggleIconButton Toggled="_selectedTools[tool]"
+                                 Icon="@tool.Icon"
+                                 Size="Size.Medium"
+                                 ToggledIcon="@tool.Icon"
+                                 ToggledColor="Color.Dark"
+                                 ToggledChanged="v => Tool_ToggledChanged(tool, v)"/>
+        }
+        else
+        {
+            <MudIconButton Icon="@tool.Icon"
+                           Size="Size.Medium"
+                           OnClick="() => Tool_Clicked(tool)" />
+        }
+    }
+</div>
+
+@code {
+    private Dictionary<ITool, bool> _selectedTools = default!;
+
+    [Parameter, EditorRequired] public ITool[] Tools { get; set; } = default!;
+    [Parameter] public bool Horizontal { get; set; } = true;
+
+    protected override void OnInitialized()
+    {
+        _selectedTools = Tools
+            .Where(x => x.Selectable)
+            .ToDictionary(x => x, _ => false);
+
+        if (_selectedTools.Any())
+        {
+            _selectedTools[Array.Find(Tools, x => x.Selectable)!] = true;
+        }
+    }
+
+    private void Tool_Clicked(ITool tool)
+    {
+        tool.Activate();
+        tool.Deactivate();
+    }
+
+    private void Tool_ToggledChanged(ITool tool, bool value)
+    {
+        if (!value)
+        {
+            return;
+        }
+
+        foreach (var selectedTool in _selectedTools.Keys)
+        {
+            if (!_selectedTools[selectedTool])
+            {
+                continue;
+            }
+
+            selectedTool.Deactivate();
+            _selectedTools[selectedTool] = false;
+        }
+
+        _selectedTools[tool] = true;
+        tool.Activate();
+    }
+}

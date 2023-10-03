@@ -1,0 +1,23 @@
+﻿@using VisEdge = Data.VisEdge;
+@using ShowMeGraph.Events;
+
+@attribute [PropertiesInspector(typeof(VisEdge))]
+@inherits PropertiesInspectorBase
+
+<EditForm Model="_viewModel"
+          class="d-flex flex-column gap-4">
+    <MudTextField @bind-Value="_viewModel.Weight"
+                  Label="Weight" />
+</EditForm>
+
+@code {
+    private EdgePropertiesInspectorViewModel _viewModel = default!;
+
+    [Parameter, EditorRequired] public VisEdge Model { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        _viewModel = new(Model);
+        _viewModel.PropertyChanged += async (_, e) => await OnPropertyChanged.InvokeAsync(e);
+    }
+}

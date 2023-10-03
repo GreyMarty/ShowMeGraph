@@ -45,7 +45,7 @@ public class ForceBasedLayout : ILayout
 
             foreach (var anotherNode in info.Nodes)
             {
-                if (info.AreAdjacent(node, anotherNode) || node == anotherNode)
+                if (node == anotherNode)
                 {
                     continue;
                 }
@@ -65,6 +65,11 @@ public class ForceBasedLayout : ILayout
             }
 
             node.Position += force * (Options.ForceModifier * Options.UpdateStep);
+
+            if (node.Position.Magnitude > Options.MaxOffset)
+            {
+                node.Position = node.Position.Normalized() * Options.MaxOffset;
+            }
         }
     }
 

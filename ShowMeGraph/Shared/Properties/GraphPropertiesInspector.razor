@@ -1,0 +1,30 @@
+﻿@using ShowMeGraph.Data;
+
+@attribute [PropertiesInspector(typeof(VisGraph))]
+@inherits PropertiesInspectorBase
+
+<EditForm Model="_viewModel"
+          class="d-flex flex-column gap-4">
+    <MudTextField Value="_viewModel.NodesCount"
+                  Label="Nodes Count"
+                  ReadOnly="true" />
+    <MudTextField Value="_viewModel.EdgesCount"
+                  Label="Edges Count"
+                  ReadOnly="true" />
+    <div class="d-flex justify-content-between">
+        <MudText Typo="Typo.body1" Class="align-self-center">Directed</MudText>
+        <MudCheckBox @bind-Checked="_viewModel.IsDirected"/>
+    </div>
+</EditForm>
+
+@code {
+    private GraphPropertiesInspectorViewModel _viewModel = default!;
+
+    [Parameter, EditorRequired] public VisGraph Model { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        _viewModel = new(Model);
+        _viewModel.PropertyChanged += async (_, e) => await OnPropertyChanged.InvokeAsync(e);
+    }
+}

@@ -1,10 +1,10 @@
 ﻿namespace ShowMeGraph.Shared.Properties;
 
-public class InspectorPropertiesAttribute : Attribute
+public class PropertiesInspectorAttribute : Attribute
 {
     public Type Type { get; set; }
 
-    public InspectorPropertiesAttribute(Type type)
+    public PropertiesInspectorAttribute(Type type)
     {
         Type = type;
     }

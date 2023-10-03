@@ -1,2 +1,75 @@
 ﻿@page "/"
+@using QuikGraph;
+@using ShowMeGraph.Data;
+@using ShowMeGraph.Layout.ForceBased;
+@using ShowMeGraph.Shared.Properties
 
+@using Edge = Data.VisEdge;
+
+<div class="d-flex flex-column h-100" style="overflow-x: hidden">
+    <MudPaper Class="d-flex rounded-0"
+              Outlined="true"
+              Elevation="8">
+        <Toolbar Tools="_viewModel.Tools" />
+    </MudPaper>
+    <MudPaper Class="d-flex flex-1 flex-grow-1 gap-2 rounded-0"
+              Style="overflow-y: hidden"
+              Elevation="0">
+        <MudPaper Class="px-4 py-2 rounded-0 shadow"
+                  Style="overflow-y: scroll"
+                  MinWidth="300px"
+                  Width="20%"
+                  Elevation="0">
+            <LayoutOptions Options="_viewModel.GraphLayout.Options"
+                              RenderTarget="_graphView.RenderTarget" />
+        </MudPaper>
+        <div class="d-flex flex-1">
+            <GraphView @ref="_graphView"
+                       Layout="_viewModel.GraphLayout"
+                       LayoutInfo="_viewModel.GraphLayoutInfo"
+                       RenderInfo="_viewModel.GraphRenderInfo"
+                       AllowPanning="_viewModel.AllowPanning"
+                       AllowNodeDragging="_viewModel.AllowDragging"
+                       OnNodeHoverEnter="_viewModel.OnNodeHoverEnter"
+                       OnNodeHoverLeave="_viewModel.OnNodeHoverLeave"
+                       OnNodeClicked="_viewModel.OnNodeClicked"
+                       OnEdgeHoverEnter="_viewModel.OnEdgeHoverEnter"
+                       OnEdgeHoverLeave="_viewModel.OnEdgeHoverLeave"
+                       OnEdgeClicked="_viewModel.OnEdgeClicked"
+                       OnWhitespaceClicked="_viewModel.OnWhitespaceClicked" />
+        </div>
+        <MudPaper Class="px-4 py-2 rounded-0 shadow"
+                  Style="overflow-y: scroll"
+                  MinWidth="300px"
+                  Width="20%"
+                  Elevation="0">
+            <PropertiesInspector InspectedObject="_viewModel.SelectionManager.SelectedObjects.FirstOrDefault() as object ?? _viewModel.Graph" />
+        </MudPaper>
+    </MudPaper>
+
+    <AnimationPlayer />
+</div>
+
+@code
+{
+    private IndexViewModel _viewModel = default!;
+
+    private GraphView _graphView = default!;
+
+    private object? _obj;
+
+    protected override void OnInitialized()
+    {
+        _viewModel = new();
+
+        var nodes = new VisNode[] { new(), new(), new(), new(), };
+
+        _viewModel.Graph.Value.AddVertexRange(nodes);
+        _viewModel.Graph.Value.AddEdge(new(nodes[0], nodes[1]));
+        _viewModel.Graph.Value.AddEdge(new(nodes[1], nodes[2]));
+        _viewModel.Graph.Value.AddEdge(new(nodes[2], nodes[3]));
+        _viewModel.Graph.Value.AddEdge(new(nodes[3], nodes[0]));
+
+        _obj = nodes[0];
+    }
+}

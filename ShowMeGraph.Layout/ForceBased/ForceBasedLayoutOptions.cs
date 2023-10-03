@@ -8,6 +8,7 @@ public class ForceBasedLayoutOptions
     public float PassiveDistance { get; set; }
     public float Repulsion { get; set; }
     public float ForceModifier { get; set; }
+    public float MaxOffset { get; set; }
     public float UpdateStep { get; set; }
 
     public static ForceBasedLayoutOptions Default => new()
@@ -18,6 +19,7 @@ public class ForceBasedLayoutOptions
         PassiveDistance = 5,
         Repulsion = 1,
         ForceModifier = 0.5f,
-        UpdateStep = 0.1f
+        MaxOffset = 10,
+        UpdateStep = 0.1f,
     };
 }

@@ -38,6 +38,9 @@ public class SKNodeRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
             
             var strokeColor = node.StrokeColor ?? _options.StrokeColor;
             strokePaint.Color = SKColor.Parse(strokeColor);
+            strokePaint.StrokeWidth = node.Fixed 
+                ? _options.StrokeThickness * 1.5f
+                : _options.StrokeThickness;
 
             canvas.DrawCircle(position.X, position.Y, SKRenderingConstans.NodeRadius * target.PixelsPerUnit, fillPaint);
             canvas.DrawCircle(position.X, position.Y, SKRenderingConstans.NodeRadius * target.PixelsPerUnit, strokePaint);

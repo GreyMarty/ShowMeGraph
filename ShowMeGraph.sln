@@ -5,15 +5,15 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeGraph.Contracts", "ShowMeGraph.Contracts\ShowMeGraph.Contracts.csproj", "{2D4363D4-FCD6-44EB-8952-A898B3747220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowMeGraph.Layout", "ShowMeGraph.Layout\ShowMeGraph.Layout.csproj", "{1106FF3F-5D8B-4055-ACEF-92BA08E24032}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeGraph.Layout", "ShowMeGraph.Layout\ShowMeGraph.Layout.csproj", "{1106FF3F-5D8B-4055-ACEF-92BA08E24032}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowMeGraph.Rendering.Core", "ShowMeGraph.Rendering.Core\ShowMeGraph.Rendering.Core.csproj", "{22F97755-E8B0-4924-B64E-C8D90AF89FFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeGraph.Rendering.Core", "ShowMeGraph.Rendering.Core\ShowMeGraph.Rendering.Core.csproj", "{22F97755-E8B0-4924-B64E-C8D90AF89FFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowMeGraph.Rendering.SkiaSharp", "ShowMeGraph.Rendering.SkiaSharp\ShowMeGraph.Rendering.SkiaSharp.csproj", "{FD5F071C-DB65-4554-8992-1A78077678C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeGraph.Rendering.SkiaSharp", "ShowMeGraph.Rendering.SkiaSharp\ShowMeGraph.Rendering.SkiaSharp.csproj", "{FD5F071C-DB65-4554-8992-1A78077678C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowMeGraph.Blazor", "ShowMeGraph.Blazor\ShowMeGraph.Blazor.csproj", "{A272187C-310F-4022-9B9D-114CD6F83617}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeGraph.Blazor", "ShowMeGraph.Blazor\ShowMeGraph.Blazor.csproj", "{A272187C-310F-4022-9B9D-114CD6F83617}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowMeGraph", "ShowMeGraph\ShowMeGraph.csproj", "{F1E079BB-CE3D-418D-AAE8-32F020798E68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowMeGraph", "ShowMeGraph\ShowMeGraph.csproj", "{F1E079BB-CE3D-418D-AAE8-32F020798E68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

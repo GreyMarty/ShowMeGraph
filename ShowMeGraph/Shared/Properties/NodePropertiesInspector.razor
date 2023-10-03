@@ -1,0 +1,38 @@
+﻿@using ShowMeGraph.Data;
+
+@attribute [PropertiesInspector(typeof(VisNode))]
+@inherits PropertiesInspectorBase
+
+<EditForm Model="_viewModel"
+          class="d-flex flex-column gap-4">
+    <div class="d-flex gap-4">
+        <MudText Typo="Typo.body1" Class="align-self-end">Position</MudText>
+        <MudTextField T="float"
+                      Value="_viewModel.Position.X"
+                      ValueChanged="async v => _viewModel.Position = _viewModel.Position with { X = v }"
+                      AdornmentText="X"
+                      Adornment="Adornment.Start"/>
+        <MudTextField T="float"
+                      Value="_viewModel.Position.Y"
+                      ValueChanged="async v => _viewModel.Position = _viewModel.Position with { Y = v }"
+                      AdornmentText="Y"
+                      Adornment="Adornment.Start"/>
+    </div>
+    <div class="d-flex justify-content-between">
+        <MudText Typo="Typo.body1" Class="align-self-center">Fixed</MudText>
+        <MudCheckBox @bind-Checked="_viewModel.Fixed" />
+    </div>
+    
+</EditForm>
+
+@code {
+    private NodePropertiesInspectorViewModel _viewModel = default!;
+
+    [Parameter, EditorRequired] public VisNode Model { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        _viewModel = new(Model);
+        _viewModel.PropertyChanged += async (_, e) => await OnPropertyChanged.InvokeAsync(e);
+    }
+}

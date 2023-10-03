@@ -2,4 +2,14 @@
 
 namespace ShowMeGraph.Blazor.Events;
 
-public record NodeEventArgs(IRenderNode Node);
+public class NodeEventArgs : EventArgs
+{
+    public IRenderNode Node { get; }
+    public EventArgs? SenderEventArgs { get; }
+
+    public NodeEventArgs(IRenderNode node, EventArgs? senderEventArgs = null)
+    {
+        Node = node;
+        SenderEventArgs = senderEventArgs;
+    }
+}

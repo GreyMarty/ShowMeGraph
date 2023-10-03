@@ -3,37 +3,36 @@ using ShowMeGraph.Contracts;
 
 namespace ShowMeGraph.Data;
 
-public class GraphLayoutInfo<TGraph> : IGraphLayoutInfo
-    where TGraph : IEdgeListGraph<Node, Edge>
+public class GraphLayoutInfo : IGraphLayoutInfo
 {
 
-    private readonly TGraph _graph;
+    private readonly VisGraph _graph;
 
-    public GraphLayoutInfo(TGraph graph)
+    public GraphLayoutInfo(VisGraph graph)
     {
         _graph = graph;
     }
 
-    public IEnumerable<ILayoutNode> Nodes => _graph.Vertices;
+    public IEnumerable<ILayoutNode> Nodes => _graph.Value.Vertices;
 
     public IEnumerable<ILayoutNode> AdjacentNodes(ILayoutNode node)
     {
-        var outNodes = _graph.Edges
+        var outNodes = _graph.Value.Edges
             .Where(e => e.Source == node)
             .Select(e => e.Target);
 
-        var inNodes = _graph.Edges
+        var inNodes = _graph.Value.Edges
             .Where(e => e.Target == node)
             .Select(e => e.Source);
 
-        return outNodes.Union(inNodes);
+        return outNodes.Concat(inNodes);
     }
 
     public bool AreAdjacent(ILayoutNode a, ILayoutNode b)
     {
         return
-            (_graph as IImplicitUndirectedGraph<Node, Edge>)?.ContainsEdge((Node)a, (Node)b) ??
-            (_graph as IIncidenceGraph<Node, Edge>)?.ContainsEdge((Node)a, (Node)b) ??
-            _graph.Edges.Any(e => e.Source == a && e.Target == b);
+            (_graph.Value as IImplicitUndirectedGraph<VisNode, VisEdge>)?.ContainsEdge((VisNode)a, (VisNode)b) ??
+            (_graph.Value as IIncidenceGraph<VisNode, VisEdge>)?.ContainsEdge((VisNode)a, (VisNode)b) ??
+            _graph.Value.Edges.Any(e => e.Source == a && e.Target == b);
     }
 }
