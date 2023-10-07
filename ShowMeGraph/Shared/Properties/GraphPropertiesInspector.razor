@@ -1,11 +1,11 @@
 ﻿@using ShowMeGraph.Data;
 
-@attribute [PropertiesInspector(typeof(VisGraph))]
+@attribute [PropertiesInspector(typeof(UiGraphUnion<DirectedUiGraph, UndirectedUiGraph>))]
 @inherits PropertiesInspectorBase
 
 <EditForm Model="_viewModel"
           class="d-flex flex-column gap-4">
-    <MudTextField Value="_viewModel.NodesCount"
+    <MudTextField Value="_viewModel.VertexCount"
                   Label="Nodes Count"
                   ReadOnly="true" />
     <MudTextField Value="_viewModel.EdgesCount"
@@ -20,7 +20,7 @@
 @code {
     private GraphPropertiesInspectorViewModel _viewModel = default!;
 
-    [Parameter, EditorRequired] public VisGraph Model { get; set; } = default!;
+    [Parameter, EditorRequired] public UiGraphUnion<DirectedUiGraph, UndirectedUiGraph> Model { get; set; } = default!;
 
     protected override void OnParametersSet()
     {

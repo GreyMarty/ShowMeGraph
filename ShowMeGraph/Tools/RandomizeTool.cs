@@ -24,22 +24,22 @@ public class RandomizeTool : ITool
 
         var random = new Random();
 
-        _index.Graph.Value.RemoveEdgeIf(_ => true);
+        _index.Graph.RemoveEdgeIf(_ => true);
 
-        foreach (var src in _index.Graph.Value.Vertices)
+        foreach (var src in _index.Graph.Vertices)
         {
-            foreach (var dest in _index.Graph.Value.Vertices)
+            foreach (var dest in _index.Graph.Vertices)
             {
                 if (src == dest || random.NextSingle() > EdgeProbability)
                 {
                     continue;
                 }
 
-                var edge = new VisEdge(src, dest)
+                var edge = new UiEdge(src, dest)
                 {
                     Weight = random.Next(0, 100)
                 };
-                _index.Graph.Value.AddEdge(edge);
+                _index.Graph.AddEdge(edge);
             }
         }
     }

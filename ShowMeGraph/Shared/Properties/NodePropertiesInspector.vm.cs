@@ -5,7 +5,7 @@ namespace ShowMeGraph.Shared.Properties
 {
     public class NodePropertiesInspectorViewModel : ViewModelBase
     {
-        private readonly VisNode _model;
+        private readonly UiVertex _model;
 
         public Vector2F Position 
         {
@@ -27,7 +27,7 @@ namespace ShowMeGraph.Shared.Properties
             }
         }
 
-        public NodePropertiesInspectorViewModel(VisNode model)
+        public NodePropertiesInspectorViewModel(UiVertex model)
         {
             _model = model;
         }

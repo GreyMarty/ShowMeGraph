@@ -23,7 +23,7 @@ public class SKNodeTextRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
             Color = SKColor.Parse(_options.StrokeColor)
         };
 
-        foreach (var node in info.Nodes)
+        foreach (var node in info.Vertices)
         {
             var position = node.Position * target.PixelsPerUnit;
 

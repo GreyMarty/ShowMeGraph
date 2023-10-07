@@ -1,7 +1,7 @@
-﻿@using VisEdge = Data.VisEdge;
+﻿@using UiEdge = Data.UiEdge;
 @using ShowMeGraph.Events;
 
-@attribute [PropertiesInspector(typeof(VisEdge))]
+@attribute [PropertiesInspector(typeof(UiEdge))]
 @inherits PropertiesInspectorBase
 
 <EditForm Model="_viewModel"
@@ -13,7 +13,7 @@
 @code {
     private EdgePropertiesInspectorViewModel _viewModel = default!;
 
-    [Parameter, EditorRequired] public VisEdge Model { get; set; } = default!;
+    [Parameter, EditorRequired] public UiEdge Model { get; set; } = default!;
 
     protected override void OnParametersSet()
     {

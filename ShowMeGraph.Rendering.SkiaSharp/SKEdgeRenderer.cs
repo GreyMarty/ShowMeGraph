@@ -29,7 +29,7 @@ public class SKEdgeRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
             var srcPosition = edge.Source.Position;
             var destPosition = edge.Target.Position;
 
-            var hasReturnEdge = info.Directed && info.Edge(edge.Target, edge.Source) is not null;
+            var hasReturnEdge = info.IsDirected && info.Edge(edge.Target, edge.Source) is not null;
 
             var direction = (destPosition - srcPosition).Normalized();
             var normal = new Vector2F(-direction.Y, direction.X);
@@ -48,12 +48,12 @@ public class SKEdgeRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
             upperTipHalfPosition *= target.PixelsPerUnit;
             lowerTipHalfPosition *= target.PixelsPerUnit;
 
-            var color = edge.Color ?? _options.StrokeColor;
+            var color = edge.DisplayedColor ?? _options.StrokeColor;
             paint.Color = SKColor.Parse(color);
 
             canvas.DrawLine(new(srcPosition.X, srcPosition.Y), new(destPosition.X, destPosition.Y), paint);
             
-            if (info.Directed)
+            if (info.IsDirected)
             {
                 canvas.DrawLine(new(destPosition.X, destPosition.Y), new(upperTipHalfPosition.X, upperTipHalfPosition.Y), paint);
                 canvas.DrawLine(new(destPosition.X, destPosition.Y), new(lowerTipHalfPosition.X, lowerTipHalfPosition.Y), paint);

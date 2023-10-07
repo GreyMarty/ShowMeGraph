@@ -1,9 +1,7 @@
-﻿using QuikGraph;
-using ShowMeGraph.Animation;
+﻿using ShowMeGraph.Animation;
 using ShowMeGraph.Contracts;
 using ShowMeGraph.Data;
 using ShowMeGraph.Pages;
-using System.Xml.Linq;
 
 namespace ShowMeGraph.Algorithms;
 
@@ -26,18 +24,18 @@ public class DijkstraAnimatedAlgorithm : IAnimatedAlgorithm
     {
         var steps = new List<IAnimationStep>();
 
-        var graph = _index.Graph.Value;
-        var startNode = _index.SelectionManager.SelectedObjects.FirstOrDefault() as VisNode ?? graph.Vertices.FirstOrDefault();
+        var graph = _index.Graph;
+        var startNode = _index.SelectionManager.SelectedObjects.FirstOrDefault() as UiVertex ?? graph.Vertices.FirstOrDefault();
 
         if (startNode is null)
         {
             return;
         }
 
-        var distances = new Dictionary<VisNode, float>();
-        var visited = new HashSet<VisNode>();
+        var distances = new Dictionary<UiVertex, float>();
+        var visited = new HashSet<UiVertex>();
 
-        var queue = new PriorityQueue<VisNode, float>();
+        var queue = new PriorityQueue<UiVertex, float>();
 
         foreach (var node in graph.Vertices)
         {
@@ -58,12 +56,7 @@ public class DijkstraAnimatedAlgorithm : IAnimatedAlgorithm
 
             steps.Add(Step(node, float.IsInfinity(distance) ? "inf" : distance.ToString(), ProcessedColor));
 
-            if ((graph as AdjacencyGraph<VisNode, VisEdge>)?.TryGetOutEdges(node, out var edges) != true)
-            {
-                edges = (graph as UndirectedGraph<VisNode, VisEdge>)?.AdjacentEdges(node);
-            }
-
-            foreach (var edge in edges)
+            foreach (var edge in graph.OutEdges(node))
             {
                 var dest = edge.Source == node
                     ? edge.Target
@@ -90,7 +83,7 @@ public class DijkstraAnimatedAlgorithm : IAnimatedAlgorithm
         _index.AnimationManager.Play(animation);
     }
 
-    private IEnumerable<IAnimationStep> Setup(IMutableVertexAndEdgeSet<VisNode, VisEdge> graph)
+    private IEnumerable<IAnimationStep> Setup(IUiGraph<UiVertex, UiEdge> graph)
     {
         return graph.Vertices.Select(n => new CombinedAnimationStep(new[] 
         {
@@ -99,7 +92,7 @@ public class DijkstraAnimatedAlgorithm : IAnimatedAlgorithm
         }, TimeSpan.FromMilliseconds(33)));
     }
 
-    private IAnimationStep Step(VisNode node, string? text, string? color)
+    private IAnimationStep Step(UiVertex node, string? text, string? color)
     {
         return new CombinedAnimationStep(new[]
         {

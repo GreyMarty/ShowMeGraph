@@ -29,14 +29,14 @@ public class SKNodeRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
             IsStroke = true
         };
 
-        foreach (var node in info.Nodes)
+        foreach (var node in info.Vertices)
         {
             var position = node.Position * target.PixelsPerUnit;
 
             var color = node.Color ?? _options.NodeFillColor;
             fillPaint.Color = SKColor.Parse(color);
             
-            var strokeColor = node.StrokeColor ?? _options.StrokeColor;
+            var strokeColor = node.DisplayedStrokeColor ?? _options.StrokeColor;
             strokePaint.Color = SKColor.Parse(strokeColor);
             strokePaint.StrokeWidth = node.Fixed 
                 ? _options.StrokeThickness * 1.5f

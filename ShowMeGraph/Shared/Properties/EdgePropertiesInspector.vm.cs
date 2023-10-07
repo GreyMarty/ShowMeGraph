@@ -5,7 +5,7 @@ namespace ShowMeGraph.Shared.Properties;
 
 public class EdgePropertiesInspectorViewModel : ViewModelBase
 {
-    private readonly VisEdge _model;
+    private readonly UiEdge _model;
 
     public int Weight
     {
@@ -17,7 +17,7 @@ public class EdgePropertiesInspectorViewModel : ViewModelBase
         }
     }
 
-    public EdgePropertiesInspectorViewModel(VisEdge model)
+    public EdgePropertiesInspectorViewModel(UiEdge model)
     {
         _model = model;
     }

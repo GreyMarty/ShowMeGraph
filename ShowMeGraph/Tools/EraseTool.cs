@@ -36,19 +36,19 @@ public class EraseTool : ITool
 
     private void SelectionManager_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var node = e.Selected as VisNode;
+        var node = e.Selected as UiVertex;
 
         if (node is not null)
         {
-            _index.Graph.Value.RemoveVertex(node);
+            _index.Graph.RemoveVertex(node);
             return;
         }
 
-        var edge = e.Selected as VisEdge;
+        var edge = e.Selected as UiEdge;
 
         if (edge is not null)
         {
-            _index.Graph.Value.RemoveEdge(edge);
+            _index.Graph.RemoveEdge(edge);
         }
     }
 }

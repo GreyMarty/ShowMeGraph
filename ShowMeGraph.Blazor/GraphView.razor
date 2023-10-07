@@ -61,7 +61,7 @@
             return null;
         }
 
-        foreach (var node in RenderInfo.Nodes)
+        foreach (var node in RenderInfo.Vertices)
         {
             if ((node.Position - point).SqrMagnitude <= SKRenderingConstans.NodeRadius * SKRenderingConstans.NodeRadius)
             {

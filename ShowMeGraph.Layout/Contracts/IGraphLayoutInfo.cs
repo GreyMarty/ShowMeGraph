@@ -2,8 +2,8 @@
 
 public interface IGraphLayoutInfo
 {
-    public IEnumerable<ILayoutNode> Nodes { get; }
+    public IEnumerable<ILayoutNode> Vertices { get; }
 
     public bool AreAdjacent(ILayoutNode a, ILayoutNode b);
-    public IEnumerable<ILayoutNode> AdjacentNodes(ILayoutNode node);
+    public IEnumerable<ILayoutNode> AdjacentVertices(ILayoutNode node);
 }

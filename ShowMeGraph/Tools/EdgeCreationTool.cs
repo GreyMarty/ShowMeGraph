@@ -36,20 +36,20 @@ public class EdgeCreationTool : ITool
 
     private void SelectionManager_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        var dest = e.Selected as VisNode;
+        var dest = e.Selected as UiVertex;
 
         if (dest is null)
         {
             return;
         }
 
-        var src = Array.Find(e.Deselected, x => x is VisNode) as VisNode;
+        var src = Array.Find(e.Deselected, x => x is UiVertex) as UiVertex;
 
         if (src is null)
         {
             return;
         }
 
-        _index.Graph.Value.AddEdge(new(src, dest));
+        _index.Graph.AddEdge(new(src, dest));
     }
 }

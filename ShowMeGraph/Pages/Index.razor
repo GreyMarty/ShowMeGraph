@@ -1,17 +1,27 @@
 ﻿@page "/"
 @using QuikGraph;
 @using ShowMeGraph.Data;
+@using ShowMeGraph.Data.Serialization;
 @using ShowMeGraph.Layout.ForceBased;
+@using ShowMeGraph.Shared.Dialogs;
 @using ShowMeGraph.Shared.Properties
 
-@using Edge = Data.VisEdge;
+@using Edge = Data.UiEdge;
+
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <div class="d-flex flex-column h-100" style="overflow-x: hidden">
-    <MudPaper Class="d-flex rounded-0"
+    <MudPaper Class="d-flex gap-1 rounded-0"
               Outlined="true"
               Elevation="8">
         <Toolbar Tools="_viewModel.Tools"
                  Algorithms="_viewModel.Algorithms" />
+        <MudMenu Icon="@CustomIcons.Outlined.More">
+            <MudMenuItem OnClick="MenuItemDownload_Click">Download</MudMenuItem>
+            <MudMenuItem OnClick="MenuItemUpload_Click">Upload</MudMenuItem>
+        </MudMenu>
     </MudPaper>
     <MudPaper Class="d-flex flex-1 flex-grow-1 gap-2 rounded-0"
               Style="overflow-y: hidden"
@@ -48,7 +58,7 @@
         </MudPaper>
     </MudPaper>
 
-    <AnimationPlayer Animation="_viewModel.AnimationManager.Animation"/>
+    <AnimationPlayer Animation="_viewModel.AnimationManager.Animation" />
 </div>
 
 @code
@@ -64,14 +74,72 @@
         _viewModel = new();
         _viewModel.StateHasChanged += (_, _) => StateHasChanged();
 
-        var nodes = new VisNode[] { new(), new(), new(), new(), };
+        var nodes = new UiVertex[] { new(), new(), new(), new(), };
 
-        _viewModel.Graph.Value.AddVertexRange(nodes);
-        _viewModel.Graph.Value.AddEdge(new(nodes[0], nodes[1]));
-        _viewModel.Graph.Value.AddEdge(new(nodes[1], nodes[2]));
-        _viewModel.Graph.Value.AddEdge(new(nodes[2], nodes[3]));
-        _viewModel.Graph.Value.AddEdge(new(nodes[3], nodes[0]));
+        _viewModel.Graph.AddVertexRange(nodes);
+        _viewModel.Graph.AddEdge(new(nodes[0], nodes[1]));
+        _viewModel.Graph.AddEdge(new(nodes[1], nodes[2]));
+        _viewModel.Graph.AddEdge(new(nodes[2], nodes[3]));
+        _viewModel.Graph.AddEdge(new(nodes[3], nodes[0]));
 
         _obj = nodes[0];
+    }
+
+    private async void MenuItemDownload_Click()
+    {
+        using var stream = new MemoryStream();
+        using var writer = new StreamWriter(stream);
+
+        UiGraphUnionSerializer.Serialize(writer, _viewModel.Graph);
+
+        var fileName = $"graph.gph";
+        stream.Position = 0;
+        using var streamRef = new DotNetStreamReference(stream: stream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+        stream.Close();
+    }
+
+    private async void MenuItemUpload_Click()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = DialogService.Show<UploadFileDialog>("Upload File", options);
+
+        var file = await dialog.GetReturnValueAsync<IBrowserFile>();
+
+        if (file is null)
+        {
+            return;
+        }
+
+        using var stream = file.OpenReadStream();
+
+        try
+        {
+            var memoryStream = new MemoryStream();
+            var buffer = new byte[1024];
+            var bytesRead = 0;
+
+            do
+            {
+                bytesRead = await stream.ReadAsync(buffer);
+                memoryStream.Write(buffer, 0, bytesRead);
+            } while (bytesRead > 0);
+
+            memoryStream.Position = 0;
+            using var reader = new StreamReader(memoryStream);
+
+            UiGraphUnionSerializer.Deserialize(reader, _viewModel.Graph);
+            _viewModel.GraphLayout.SetUp(_viewModel.GraphLayoutInfo);
+
+            memoryStream.Close();
+        }
+        catch
+        {
+            Snackbar.Add("Unexpected Error!", Severity.Error);
+        }
+
+        stream?.Close();
     }
 }

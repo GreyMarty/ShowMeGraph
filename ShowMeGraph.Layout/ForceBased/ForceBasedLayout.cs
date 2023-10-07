@@ -19,9 +19,9 @@ public class ForceBasedLayout : ILayout
 
     public void SetUp(IGraphLayoutInfo info)
     {
-        var nodesCount = info.Nodes.Count();
+        var nodesCount = info.Vertices.Count();
 
-        foreach (var node in info.Nodes)
+        foreach (var node in info.Vertices)
         {
             var estimatedRadius = MathF.Sqrt(Options.EdgeLength * nodesCount);
 
@@ -34,7 +34,7 @@ public class ForceBasedLayout : ILayout
 
     public void Arrange(IGraphLayoutInfo info)
     {
-        foreach (var node in info.Nodes)
+        foreach (var node in info.Vertices)
         {
             if (node.Fixed)
             {
@@ -43,7 +43,7 @@ public class ForceBasedLayout : ILayout
 
             var force = new Vector2F();
 
-            foreach (var anotherNode in info.Nodes)
+            foreach (var anotherNode in info.Vertices)
             {
                 if (node == anotherNode)
                 {
@@ -54,7 +54,7 @@ public class ForceBasedLayout : ILayout
                 force += CalculatePassiveAttraction(node.Position, anotherNode.Position);
             }
 
-            foreach (var anotherNode in info.AdjacentNodes(node))
+            foreach (var anotherNode in info.AdjacentVertices(node))
             {
                 if (node == anotherNode)
                 {

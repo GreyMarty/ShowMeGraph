@@ -27,7 +27,7 @@ public class SKEdgeTextRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
 
         foreach (var edge in info.Edges)
         {
-            var text = edge.Text;
+            var text = edge.DisplayedText;
 
             if (string.IsNullOrEmpty(text))
             {
@@ -37,7 +37,7 @@ public class SKEdgeTextRenderer : IRender<SKRenderTarget, IGraphRenderInfo>
             var srcPosition = edge.Source.Position;
             var destPosition = edge.Target.Position;
 
-            var hasReturnEdge = info.Directed && info.Edge(edge.Target, edge.Source) is not null;
+            var hasReturnEdge = info.IsDirected && info.Edge(edge.Target, edge.Source) is not null;
 
             var direction = (destPosition - srcPosition).Normalized();
             var normal = new Vector2F(-direction.Y, direction.X);

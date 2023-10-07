@@ -1,6 +1,6 @@
 ﻿@using ShowMeGraph.Data;
 
-@attribute [PropertiesInspector(typeof(VisNode))]
+@attribute [PropertiesInspector(typeof(UiVertex))]
 @inherits PropertiesInspectorBase
 
 <EditForm Model="_viewModel"
@@ -28,7 +28,7 @@
 @code {
     private NodePropertiesInspectorViewModel _viewModel = default!;
 
-    [Parameter, EditorRequired] public VisNode Model { get; set; } = default!;
+    [Parameter, EditorRequired] public UiVertex Model { get; set; } = default!;
 
     protected override void OnParametersSet()
     {

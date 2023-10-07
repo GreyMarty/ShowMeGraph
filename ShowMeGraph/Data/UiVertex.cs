@@ -3,17 +3,17 @@ using ShowMeGraph.Data.Constants;
 
 namespace ShowMeGraph.Data;
 
-public class VisNode : IRenderNode, ISelectable, IHoverable
+public class UiVertex : IRenderNode, ISelectable, IHoverable
 {
     public string? Color { get; set; }
-    public string? StrokeColor => (Selected, Hovered) switch
+    public string? DisplayedStrokeColor => (Selected, Hovered) switch
     {
         (true, _) => CustomColors.SelectedStrokeColor,
         (false, true) => CustomColors.HoveredStrokeColor,
-        _ => UserStrokeColor
+        _ => StrokeColor
     };
 
-    public string? UserStrokeColor { get; set; }
+    public string? StrokeColor { get; set; }
 
     public string? Text { get; set; }
 

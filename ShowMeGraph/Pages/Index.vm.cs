@@ -11,7 +11,7 @@ namespace ShowMeGraph.Pages;
 
 public class IndexViewModel : ViewModelBase
 {
-    private VisGraph _graph;
+    private UiGraphUnion<DirectedUiGraph, UndirectedUiGraph> _graph;
     private ForceBasedLayout _graphLayout;
     private GraphLayoutInfo _graphLayoutInfo;
     private GraphRenderInfo _graphRenderInfo;
@@ -19,7 +19,7 @@ public class IndexViewModel : ViewModelBase
     private bool _allowPanning = true;
     private bool _allowDragging = true;
 
-    public VisGraph Graph
+    public UiGraphUnion<DirectedUiGraph, UndirectedUiGraph> Graph
     {
         get => _graph;
         set => SetField(ref _graph, value, nameof(Graph));
@@ -69,7 +69,7 @@ public class IndexViewModel : ViewModelBase
 
     public IndexViewModel()
     {
-        _graph = new();
+        _graph = new(true);
         _graphLayout = new();
         _graphLayoutInfo = new(_graph);
         _graphRenderInfo = new(_graph);
@@ -85,7 +85,8 @@ public class IndexViewModel : ViewModelBase
 
         Algorithms = new IAnimatedAlgorithm[]
         {
-            new DijkstraAnimatedAlgorithm(this)
+            new DijkstraAnimatedAlgorithm(this),
+            new HeuristicColoringAnimatedAlgorithm(this)
         };
 
         SelectionManager = new(this);

@@ -2,10 +2,10 @@
 
 public interface IGraphRenderInfo
 {
-    public IEnumerable<IRenderNode> Nodes { get; }
+    public IEnumerable<IRenderNode> Vertices { get; }
     public IEnumerable<IRenderEdge<IRenderNode>> Edges { get; }
 
-    public bool Directed { get; }
+    public bool IsDirected { get; }
 
     public IRenderEdge<IRenderNode>? Edge(IRenderNode source, IRenderNode target);
 }

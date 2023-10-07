@@ -3,6 +3,6 @@
 public interface IRenderEdge<TNode> : IEdge<TNode>
     where TNode : IRenderNode
 {
-    public string? Color { get; }
-    public string? Text { get; }
+    public string? DisplayedColor { get; }
+    public string? DisplayedText { get; }
 }

@@ -36,9 +36,9 @@ public class NodeCreationTool : ITool
 
     private void Index_WhitespaceClicked(object? sender, LocalMouseEventArgs e)
     {
-        var node = new VisNode();
+        var node = new UiVertex();
         node.Position = e.LocalPosition;
 
-        _index.Graph.Value.AddVertex(node);
+        _index.Graph.AddVertex(node);
     }
 }

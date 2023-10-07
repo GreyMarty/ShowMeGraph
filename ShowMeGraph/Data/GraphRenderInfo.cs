@@ -1,34 +1,24 @@
-﻿using QuikGraph;
-using ShowMeGraph.Contracts;
+﻿using ShowMeGraph.Contracts;
 
 namespace ShowMeGraph.Data;
 
 public class GraphRenderInfo : IGraphRenderInfo
 {
-    private readonly VisGraph _graph;
+    private readonly IUiGraph<UiVertex, UiEdge> _graph;
 
-    public GraphRenderInfo(VisGraph graph)
+    public GraphRenderInfo(IUiGraph<UiVertex, UiEdge> graph)
     {
         _graph = graph;
     }
 
-    public IEnumerable<IRenderNode> Nodes => _graph.Value.Vertices;
-    public IEnumerable<IRenderEdge<IRenderNode>> Edges => _graph.Value.Edges;
+    public IEnumerable<IRenderNode> Vertices => _graph.Vertices;
+    public IEnumerable<IRenderEdge<IRenderNode>> Edges => _graph.Edges;
 
-    public bool Directed => _graph.IsDirected;
+    public bool IsDirected => _graph.IsDirected;
 
-    public IRenderEdge<IRenderNode>? Edge(IRenderNode source, IRenderNode target) 
+    public IRenderEdge<IRenderNode>? Edge(IRenderNode source, IRenderNode target)
     {
-        if ((_graph.Value as IImplicitUndirectedGraph<VisNode, VisEdge>)?.TryGetEdge((VisNode)source, (VisNode)target, out var edge) == true)
-        {
-            return edge;
-        }
-
-        if ((_graph.Value as IIncidenceGraph<VisNode, VisEdge>)?.TryGetEdge((VisNode)source, (VisNode)target, out edge) == true)
-        {
-            return edge;
-        }
-
-        return _graph.Value.Edges.FirstOrDefault(e => e.Source == source && e.Target == target);
+        _graph.TryGetEdge((UiVertex)source, (UiVertex)target, out var edge);
+        return edge;
     }
 }
